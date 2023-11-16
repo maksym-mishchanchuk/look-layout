@@ -1,4 +1,5 @@
-- [DEMO]([https://look-layout.vercel.app/])
+- [DEMO](https://look-layout.vercel.app/)
+
 
 
 ## Getting Started
