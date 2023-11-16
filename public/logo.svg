@@ -1,0 +1,41 @@
+<svg width="78" height="30" viewBox="0 0 78 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="78" height="30" fill="#F5F5F5"/>
+<g id="Header">
+<mask id="path-1-inside-1_0_1" fill="white">
+<path d="M-311 -23H1609V53H-311V-23Z"/>
+</mask>
+<path d="M-311 -23H1609V53H-311V-23Z" fill="#1E1E27"/>
+<path d="M1609 52H-311V54H1609V52Z" fill="#313442" mask="url(#path-1-inside-1_0_1)"/>
+<g id="&#208;&#186;&#208;&#190;&#208;&#189;&#209;&#130;&#208;&#181;&#208;&#185;&#208;&#189;&#208;&#181;&#209;&#128;">
+<g id="Left">
+<g id="Logo" clip-path="url(#clip0_0_1)">
+<g id="Group 60">
+<ellipse id="Ellipse 66" cx="22.1886" cy="19.0199" rx="10.0343" ry="10.0343" fill="url(#paint0_linear_0_1)"/>
+<ellipse id="Ellipse 69" cx="18.8441" cy="14.56" rx="2.22983" ry="2.22984" fill="white"/>
+</g>
+<g id="Group 59">
+<ellipse id="Ellipse 67" cx="45.6026" cy="19.0199" rx="10.0343" ry="10.0343" fill="url(#paint1_linear_0_1)"/>
+<ellipse id="Ellipse 68" cx="41.1429" cy="14.56" rx="2.22984" ry="2.22984" fill="white"/>
+</g>
+<rect id="Rectangle 15" x="0.415039" width="6.59038" height="29.0941" rx="3.29519" fill="#8D27ED"/>
+<rect id="Rectangle 12" x="73.3721" y="7.53613" width="5.31568" height="15.2553" rx="2.65784" transform="rotate(45 73.3721 7.53613)" fill="#6825FD"/>
+<rect id="Rectangle 13" x="77.7441" y="26.0671" width="5.56196" height="15.9148" rx="2.78098" transform="rotate(135 77.7441 26.0671)" fill="#6825FD"/>
+<rect id="Rectangle 16" x="60.7773" width="6.59038" height="29.0941" rx="3.29519" fill="#8D27ED"/>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="22.1886" y1="8.98559" x2="22.1886" y2="29.0541" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6613D1"/>
+<stop offset="1" stop-color="#CD57EE"/>
+</linearGradient>
+<linearGradient id="paint1_linear_0_1" x1="45.6026" y1="8.98559" x2="45.6026" y2="29.0541" gradientUnits="userSpaceOnUse">
+<stop stop-color="#6613D1"/>
+<stop offset="1" stop-color="#CD57EE"/>
+</linearGradient>
+<clipPath id="clip0_0_1">
+<rect width="78" height="30" fill="white"/>
+</clipPath>
+</defs>
+</svg>

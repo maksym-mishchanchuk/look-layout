@@ -1,95 +1,150 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import styles from './page.module.scss'
+import React, { useState } from "react";
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { initialCategory } from "@/constants/initialCategory";
+import Header from "@/components/Header/Header";
+import CreateCategoryButton from "@/components/CreateCategoryButton/CreateCategoryButton";
+import FormNewCategory from "@/components/FormNewCategory/FormNewCategory";
+import { Category } from "@/types/Category";
+import SaveCancelCategory from "@/components/SaveCancelCategory";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal/DeleteConfirmationModal";
+import Categories from "@/components/Categories/Categories";
+
+
+const useLocalStorage = (key: string, initialValue: Category[]) => {
+  const [state, setState] = useState(() => {
+    try {
+      const value = window.localStorage.getItem(key)
+      return value ? JSON.parse(value) : initialValue
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
+  const setValue = (value: Category[] | ((prevState: Category[]) => Category[])) => {
+    try {
+      const valueToStore = value instanceof Function ? value(state) : value
+      window.localStorage.setItem(key, JSON.stringify(valueToStore))
+      setState(value)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  return [state, setValue];
+}
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [addCategory, setAddCategory] = useState(false);
+  const [categories, setCategories] =
+    useLocalStorage('allCategories', [initialCategory]);
+  const [query, setQuery] = useState('');
+  const [statusDelete, setStatusDelete] = useState<boolean>(false);
+  const [idForDelete, setIdForDelete] = useState<string>('');
+  const [categoryUpdateStatus, setCategoryUpdateStatus] =
+    useState<Category[] | []>([]);
+  const filteredCategory: Category[] = categories
+    .filter(({ name }: Category) => name.toLowerCase().includes(query.trim().toLowerCase()));
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+  const handleDragDrop = (res: any) => {
+    const {source, destination, type} = res;
+    if (!destination) {
+      return;
+    }
+
+    if (source.droppableId === destination.droppableId
+      && source.index === destination.index
+    ) {
+      return;
+    }
+
+    if (type === 'group') {
+      const reorderedCategories = [...categories];
+      const sourceIndex = source.index;
+      const destinationIndex = destination.index;
+
+      const [removedCategories] = reorderedCategories.splice(sourceIndex, 1);
+      reorderedCategories.splice(destinationIndex, 0, removedCategories);
+      return setCategories(reorderedCategories)
+    }
+  }
+
+  const handleStatusCategory = (id: string, status: boolean | undefined) => {
+    setCategories((prevState: Category[] | undefined) => {
+      if (prevState) {
+        return prevState.map(oneCategory => {
+          if (oneCategory.id === id) {
+            return { ...oneCategory, status: !status };
+          }
+          return oneCategory;
+        });
+      }
+      return [];
+    });
+  }
+
+    return (
+    <div>
+      {statusDelete && (
+        <DeleteConfirmationModal
+          idForDelete={idForDelete}
+          setIdForDelete={setIdForDelete}
+          setCategories={setCategories}
+          setStatusDelete={setStatusDelete}
         />
-      </div>
+      )}
+      <Header setQuery={setQuery} />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+      <main className={styles.categories}>
+       <CreateCategoryButton
+         setAddCategory={setAddCategory}
+         addCategory={addCategory}
+       />
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+        {addCategory && (
+          <FormNewCategory
+            setIdForDelete={setIdForDelete}
+            setStatusDelete={setStatusDelete}
+            handleStatusCategory={handleStatusCategory}
+            setCategories={setCategories}
+            setAddCategory={setAddCategory}
+          />
+        )}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+        <DragDropContext onDragEnd={handleDragDrop}>
+           <Droppable droppableId="ROOT" type="group">
+             {(provided) => (
+               <div  {...provided.droppableProps} ref={provided.innerRef}>
+                 <Categories
+                   filteredCategory={filteredCategory}
+                   categoryUpdateStatus={categoryUpdateStatus}
+                   setCategoryUpdateStatus={setCategoryUpdateStatus}
+                   setIdForDelete={setIdForDelete}
+                   setStatusDelete={setStatusDelete}
+                 />
+               </div>
+             )}
+           </Droppable>
+        </DragDropContext>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        {/*{statusDelete && (*/}
+        {/*  <DeleteConfirmationModal*/}
+        {/*    idForDelete={idForDelete}*/}
+        {/*    setIdForDelete={setIdForDelete}*/}
+        {/*    setCategories={setCategories}*/}
+        {/*    setStatusDelete={setStatusDelete}*/}
+        {/*  />*/}
+        {/*)}*/}
+      </main>
+
+      {!!categoryUpdateStatus.length && (
+       <SaveCancelCategory
+         handleStatusCategory={handleStatusCategory}
+         categoryUpdateStatus={categoryUpdateStatus}
+         setCategoryUpdateStatus={setCategoryUpdateStatus}
+       />
+      )}
+    </div>
   )
 }
