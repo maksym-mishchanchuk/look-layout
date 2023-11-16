@@ -1,4 +1,4 @@
-import {Draggable} from "@hello-pangea/dnd";
+import { Draggable } from "@hello-pangea/dnd";
 import CategoryItem from "@/components/CategotyItem/CategoryItem";
 import React from "react";
 import { Category } from "@/types/Category";

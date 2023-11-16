@@ -1,7 +1,7 @@
 "use client";
 import styles from './page.module.scss'
 import React, { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { DragDropContext, Droppable } from '@hello-pangea/dnd'
 import { initialCategory } from "@/constants/initialCategory";
 import Header from "@/components/Header/Header";
 import CreateCategoryButton from "@/components/CreateCategoryButton/CreateCategoryButton";
@@ -44,8 +44,10 @@ export default function Home() {
   const [idForDelete, setIdForDelete] = useState<string>('');
   const [categoryUpdateStatus, setCategoryUpdateStatus] =
     useState<Category[] | []>([]);
-  const filteredCategory: Category[] = categories
-    .filter(({ name }: Category) => name.toLowerCase().includes(query.trim().toLowerCase()));
+
+  const filteredCategory: Category[] = categories.length
+    ? categories.filter(({ name }: Category) => name.toLowerCase().includes(query.trim().toLowerCase()))
+    : [initialCategory];
 
   const handleDragDrop = (res: any) => {
     const {source, destination, type} = res;
@@ -127,15 +129,6 @@ export default function Home() {
              )}
            </Droppable>
         </DragDropContext>
-
-        {/*{statusDelete && (*/}
-        {/*  <DeleteConfirmationModal*/}
-        {/*    idForDelete={idForDelete}*/}
-        {/*    setIdForDelete={setIdForDelete}*/}
-        {/*    setCategories={setCategories}*/}
-        {/*    setStatusDelete={setStatusDelete}*/}
-        {/*  />*/}
-        {/*)}*/}
       </main>
 
       {!!categoryUpdateStatus.length && (
