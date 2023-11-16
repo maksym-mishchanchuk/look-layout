@@ -13,27 +13,32 @@ import Categories from "@/components/Categories/Categories";
 
 
 const useLocalStorage = (key: string, initialValue: Category[]) => {
+  const isClient = typeof window !== 'undefined';
+
   const [state, setState] = useState(() => {
     try {
-      const value = window.localStorage.getItem(key)
-      return value ? JSON.parse(value) : initialValue
+      const value = isClient ? window.localStorage.getItem(key) : null;
+      return value ? JSON.parse(value) : initialValue;
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      return initialValue;
     }
-  })
+  });
 
   const setValue = (value: Category[] | ((prevState: Category[]) => Category[])) => {
     try {
-      const valueToStore = value instanceof Function ? value(state) : value
-      window.localStorage.setItem(key, JSON.stringify(valueToStore))
-      setState(value)
+      const valueToStore = value instanceof Function ? value(state) : value;
+      if (isClient) {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      }
+      setState(value);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return [state, setValue];
-}
+};
 
 export default function Home() {
   const [addCategory, setAddCategory] = useState(false);
